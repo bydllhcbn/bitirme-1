@@ -51,13 +51,18 @@ function ajaxGet(url, callback) {
     xmlhttp.send();
 }
 
-function showLoading() {
+function showLoading(text='YÜKLENİYOR') {
+    changeLoadingText(text)
     let el = document.getElementById("loader");
     el.style.display = '';
 }
 
 function hideLoading() {
     let el = document.getElementById("loader");
-
     el.style.display = 'none';
+}
+
+function changeLoadingText(text) {
+    let el = document.getElementById("loadingText");
+    el.innerHTML = text;
 }

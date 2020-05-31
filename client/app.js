@@ -1,5 +1,5 @@
 let BASE_URL = "http://localhost:3000/"
-let CLIENT_ID = 1
+let CLIENT_ID = 2
 let extraInfoBlackBar = addRectangle(0, 90, 20, 10);
 let extraInfoYellowBar = addRectangle(20, 90, 80, 10, 'yellow');
 
@@ -46,11 +46,6 @@ function nextImage() {
 }
 
 function startAdVideo() {
-
-    setTimeout(() => {
-
-
-    }, 500);
     hideLoading();
     currentImageIndex = 0;
     nextImage();
@@ -62,12 +57,18 @@ function startAdVideo() {
 
 }
 
-function main() {
-    console.log("Application started.");
-    showLoading();
+function getAds() {
+    showLoading('BAĞLANIYOR');
     ajaxGet("http://localhost:3000/ad/getAds/" + CLIENT_ID.toString(), function (res) {
+        if (!res) {
+            return;
+        }
         let total_processes = 0;
         let images_result = JSON.parse(res);
+        if (images_result.length === 0) {
+            changeLoadingText('İLAN BEKLENİYOR')
+            return;
+        }
         for (let image of images_result) {
             let url = image['url'];
             console.log("url");
@@ -78,7 +79,7 @@ function main() {
                 video.autoPlay = false;
                 video.loop = true;
                 video.muted = true;
-                video.onloadeddata  = function () {
+                video.onloadeddata = function () {
                     video.width = video.videoWidth;
                     video.height = video.videoHeight;
                     image['tag'] = video;
@@ -107,15 +108,15 @@ function main() {
                     total_processes++;
                     if (total_processes === images_result.length) startAdVideo();
                 }
-
             }
-
-
         }
-
     });
+}
 
+function main() {
+    console.log("Application started.");
 
+    getAds();
     ajaxGet("https://www.cnnturk.com/feed/rss/bilim-teknoloji/news", response => {
         var rssItems = new window.DOMParser().parseFromString(response, "text/xml").querySelectorAll("item");
         let currentNewIndex = 0;
@@ -165,5 +166,11 @@ function WebSocketTest() {
                 window.location.reload();
             }
         };
+        ws.onclose = function () {
+            showLoading("BAĞLANIYOR")
+            setTimeout(() => {
+                location.reload();
+            }, 4000);
+        }
     }
 }
