@@ -1,1 +1,99 @@
-{{{body}}}
+<html lang="tr">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="">
+    <meta name="author" content="Ubeydullah Coban">
+    <title>İlan Yönetimi</title>
+    <link href="/stylesheets/bootstrap.min.css" rel="stylesheet"
+          integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk" crossorigin="anonymous">
+    <link rel="icon" href="/favicon.ico">
+    <script src="/javascripts/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
+    <meta name="theme-color" content="#563d7c">
+</head>
+<body class="bg-light">
+<main role="main" class="container">
+    <div class="text-center">
+        <h3 class="m-3">İLAN YÖNETİMİ</h3>
+    </div>
+    {{{body}}}
+</main>
+<footer>
+    <div class="text-center">
+        <a href="/client" target="_blank">CLIENT</a>
+    </div>
+</footer>
+<script>
+     $(document).ready(function () {
+        $(".add-more").click(function () {
+            var html = $(".copy").html();
+            $(".after-add-more").after(html);
+        });
+        $("body").on("click", ".remove", function () {
+            $(this).parents(".control-group").remove();
+        });
+    });
+
+    var ws;
+    function sendToSocket(action, params) {
+        ws.send(JSON.stringify({
+            "action": action,
+            "params": params
+        }));
+    }
+    function updateBadges(ids) {
+        let allStatus = document.querySelectorAll('.connect-badge');
+        allStatus.forEach(function (el) {
+            el.classList.remove('badge-success');
+            el.classList.add('badge-danger');
+            el.innerHTML = 'BAĞLI DEĞİL';
+        });
+        ids.forEach(function (id) {
+            let el = document.querySelectorAll('#connect-badge-'+id)[0];
+
+            if(typeof el !== 'undefined'){
+                el.classList.remove('badge-danger');
+                el.classList.add('badge-success');
+                el.innerHTML = 'BAĞLI';
+            }
+        });
+    }
+
+    function WebSocketTest() {
+        if ("WebSocket" in window) {
+            ws = new WebSocket("ws://localhost:3001");
+            ws.onopen = function () {
+                sendToSocket("login", {"userId": 0});
+                console.log("Message is sent...");
+            };
+            ws.onmessage = function (evt) {
+                var json = JSON.parse(evt.data);
+                console.log("Message is received... ");
+                console.log(json);
+                if (json.action === "reload") {
+                    window.location.reload();
+                }
+                if (json.action === "clients") {
+                    console.log("clients received");
+                    console.log(json.params);
+                    updateBadges(json.params);
+                }
+            };
+
+            ws.onclose = function () {
+                let allStatus = document.querySelectorAll('.connect-badge');
+                allStatus.forEach(function (el) {
+                    el.classList.remove('badge-success');
+                    el.classList.add('badge-danger');
+                    el.innerHTML = 'SERVER BAĞLANTISI YOK!';
+                });
+                console.log("Connection is closed...");
+            };
+        } else {
+            alert("WebSocket NOT supported by your Browser!");
+        }
+    }
+    WebSocketTest();
+</script>
+</body>
+</html>

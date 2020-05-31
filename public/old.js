@@ -52,8 +52,6 @@ function changeImage() {
           context.drawImage(imgTag, x, y);
           context.fillText("Resim " + currentImageIndex + " - 2008 PORSHCE CAYMAN 2.7 DOĞUŞ ÇIKIŞLI - ", x, y + 400);
       }
-
-
       if (x < 0 || x > wWidth)
           dx = -dx;
       if (y < 0 || y > wHeight)

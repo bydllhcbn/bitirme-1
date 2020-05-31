@@ -101,7 +101,6 @@ function addText(text, x, y, fontSize = 12, color = 'black') {
 
 function draw() {
     context.clearRect(0, 0, canvas.width, canvas.height);
-
     uiObjects.forEach(o => {
         if (!o.isVisible) return;
         if (o.type === OBJECT_TYPE_TEXT) {
@@ -114,6 +113,8 @@ function draw() {
 
         } else if (o.type === OBJECT_TYPE_IMAGE) {
 
+
+            //console.log(o.content.width);
             let scale = Math.min(
                 o.width * canvas.width / o.content.width,
                 o.height * canvas.height / o.content.height

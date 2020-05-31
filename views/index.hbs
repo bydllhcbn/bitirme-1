@@ -1,18 +1,21 @@
-<!DOCTYPE html>
-<html lang="tr">
-  <head>
-    <meta charset="UTF-8">
-    <!-- https://developer.mozilla.org/en-US/docs/Web/HTTP/CSP
-    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'">
-    <meta http-equiv="X-Content-Security-Policy" content="default-src 'self'; script-src 'self'">-->
-    <title>{{title}}</title>
-    <link rel='stylesheet' href='/stylesheets/style.css' />
-  </head>
-  <body>
+<div class="row mt-3">
+    <div class="col-md-12">
+        <div class="card">
+            <div class="card-body">
+                <h5 class="card-title">Pano Listesi</h5>
 
-	<canvas id="ilanCanvas"></canvas>
-
-    <script src="./renderer.js"></script>
-    <script src="./main.js"></script>
-  </body>
-</html>
+                <div class="list-group ">
+                    {{#each boards}}
+                        <a href="/board/edit/{{this.id}}" class="list-group-item list-group-item-action ">
+                            <b>{{this.id}}</b>
+                            {{this.title}}
+                            <span class="badge badge-primary badge-pill">1</span>
+                            <span class="badge badge-danger badge-pill connect-badge" id="connect-badge-{{this.id}}">Bilinmiyor</span>
+                        </a>
+                    {{/each}}
+                </div>
+                <a href="/addBoard" class="btn btn-primary mt-2">Yeni Pano Ekle</a>
+            </div>
+        </div>
+    </div>
+</div>

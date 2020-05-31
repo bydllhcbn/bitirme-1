@@ -1,9 +1,9 @@
 var express = require('express');
 var router = express.Router();
+let db = require('../db');
 
-/* GET users listing. */
-router.get('/', function(req, res, next) {
-  res.render('client', { title: 'CLIENT' });
+router.get('/', async (req, res) => {
+  res.render('client', {title: 'CLIENT',layout: false});
 });
 
 module.exports = router;

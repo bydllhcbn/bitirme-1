@@ -1,0 +1,49 @@
+<div class="row mt-3">
+
+    <div class="col-md-12 mt-2">
+        <div class="card">
+            <div class="card-body">
+                <h5 class="card-title"><a href="/" aria-label="Previous">
+                    <span aria-hidden="true">🠘  </span>
+                </a>'{{board.title}}' Adlı Panoya Ait İlanlar</h5>
+                <div class="list-group ">
+                    {{#each ads}}
+                        <a href="/ad/edit/{{this.id}}" class="list-group-item list-group-item-action ">
+                            <b>{{this.id}}</b>
+                            {{this.title}}
+                            <span class="badge badge-primary badge-pill">{{this.price}} TL</span>
+                            <span class="badge badge-warning badge-pill">{{this.location}}</span>
+                        </a>
+                    {{/each}}
+                </div>
+                <a href="/ad/add/{{boardId}}" class="btn btn-primary mt-2">Panoya Yeni İlan Ekle</a>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-12 mt-4">
+        <div class="card">
+            <div class="card-body">
+                <h5 class="card-title"><a href="/" aria-label="Previous">
+                    <span aria-hidden="true">🠘  </span>
+                </a>'{{board.title}}' Adlı Panoyu Düzenle</h5>
+
+
+                <form action="/board/edit" method="post">
+                    <input type="hidden" name="id" value="{{board.id}}">
+                    <div class="form-group">
+                        <label for="title">Başlık</label>
+                        <input value="{{board.title}}" type="text" required minlength="2" class="form-control"
+                               id="title"
+                               name="title">
+                    </div>
+
+
+                    <button type="submit" class="btn btn-primary">Kaydet</button>
+                    <a href="/board/delete/{{board.id}}" class="btn btn-danger">Panoyu Sil</a>
+                </form>
+
+            </div>
+        </div>
+    </div>
+</div>

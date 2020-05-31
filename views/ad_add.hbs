@@ -1,0 +1,56 @@
+<div class="row mt-3">
+
+    <div class="col-md-12">
+        <div class="card">
+            <div class="card-body">
+                <h5 class="card-title"><a href="/board/edit/{{boardId}}" aria-label="Previous">
+                    <span style="font-size: 28px" aria-hidden="true">🠘  </span>
+                </a>Yeni Reklam Ekle</h5>
+                <form action="/ad/add" method="post">
+                    <input type="hidden" name="boardId" value="{{boardId}}">
+                    <div class="form-group">
+                        <label for="title">Başlık</label>
+                        <input type="text" required minlength="2" class="form-control" id="title" name="title">
+                    </div>
+                    <div class="form-group">
+                        <label for="subtitle">Alt Başlık</label>
+                        <input type="text" required minlength="2" class="form-control" id="subtitle" name="subtitle">
+                    </div>
+                    <div class="form-group">
+                        <label for="price">Fiyat (TL)</label>
+                        <input type="number" required step="0.00" class="form-control" id="price" name="price">
+                    </div>
+                    <div class="form-group">
+                        <label for="location">Konum</label>
+                        <input type="text" required minlength="2" class="form-control" id="location" name="location">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="urls">Resim/Video URL Listesi</label>
+                        <div class="input-group control-group after-add-more">
+                            <input id="urls" type="text" name="urls[]" class="form-control" placeholder="Bir Url Girin">
+                            <div class="input-group-btn">
+                                <button class="btn btn-success add-more" type="button"><i
+                                        class="glyphicon glyphicon-plus"></i> +
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+
+                    <button type="submit" class="btn btn-primary">Ekle</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="copy" style="display: none;">
+    <div class="control-group input-group" style="margin-top:10px">
+        <input type="text" name="urls[]" class="form-control" placeholder="Bir URL girin">
+        <div class="input-group-btn">
+            <button class="btn btn-danger remove" type="button"><i class="glyphicon glyphicon-remove"></i> Sil
+            </button>
+        </div>
+    </div>
+</div>

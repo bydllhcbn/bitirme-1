@@ -1,18 +1,30 @@
 <!DOCTYPE html>
 <html lang="tr">
-  <head>
+<head>
     <meta charset="UTF-8">
     <!-- https://developer.mozilla.org/en-US/docs/Web/HTTP/CSP
     <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'">
     <meta http-equiv="X-Content-Security-Policy" content="default-src 'self'; script-src 'self'">-->
     <title>{{title}}</title>
-    <link rel='stylesheet' href='/stylesheets/style.css' />
-  </head>
-  <body>
-
-	<canvas id="ilanCanvas"></canvas>
-
-    <script src="./renderer.js"></script>
-    <script src="./main.js"></script>
-  </body>
+    <link rel='stylesheet' href='/stylesheets/style.css?v=7'/>
+</head>
+<body>
+<canvas id="ilanCanvas"></canvas>
+<div class="loading-area" id="loader">
+    <div class="lds-roller">
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+        <b style="top: 85px;position: absolute;left: -15px;">YÜKLENİYOR</b>
+    </div>
+</div>
+<script src="./renderer.js"></script>
+<script src="./functions.js"></script>
+<script src="./main.js"></script>
+</body>
 </html>
