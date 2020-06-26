@@ -26,6 +26,34 @@
             <div class="card-body">
                 <h5 class="card-title"><a href="/" aria-label="Previous">
                     <span aria-hidden="true">🠘  </span>
+                </a>YAYIN</h5>
+                <h5><b>Pano Durumu: </b> Bağlı (Canlı yayın yapılmıyor)</h5>
+                <form action="/board/edit" method="post">
+                    <input type="hidden" name="id" value="{{board.id}}">
+                    <div class="form-group">
+                        <label for="title">RTMP Sunucu URL'si</label>
+                        <input value="{{board.title}}" type="text" required minlength="2" class="form-control"
+                               id="title"
+                               name="title">
+                    </div>
+                    <div class="form-group">
+                        <label for="title">Akış Adı/Anahtarı</label>
+                        <input value="{{board.title}}" type="password" required minlength="2" class="form-control"
+                               id="title"
+                               name="title">
+                    </div>
+
+                    <button type="submit" class="btn btn-success">Yayını Başlat</button>
+                </form>
+
+            </div>
+        </div>
+    </div>
+    <div class="col-md-12 mt-4">
+        <div class="card">
+            <div class="card-body">
+                <h5 class="card-title"><a href="/" aria-label="Previous">
+                    <span aria-hidden="true">🠘  </span>
                 </a>'{{board.title}}' Adlı Panoyu Düzenle</h5>
 
 
@@ -46,4 +74,5 @@
             </div>
         </div>
     </div>
+
 </div>

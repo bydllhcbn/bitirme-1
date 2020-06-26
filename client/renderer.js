@@ -25,7 +25,7 @@ window.onresize = function () {
 function addImageFromUrl(url, x, y, width, height) {
     let imgTag = new Image();
     imgTag.src = url;
-    return addImageFromTag(imgTag,x,y,width,height);
+    return addImageFromTag(imgTag, x, y, width, height);
 }
 
 
@@ -100,38 +100,53 @@ function addText(text, x, y, fontSize = 12, color = 'black') {
 }
 
 function draw() {
-    context.clearRect(0, 0, canvas.width, canvas.height);
+    //context.clearRect(0, 0, canvas.width, canvas.height);
+
+    var grd = context.createLinearGradient(0, 0, 0, canvas.height);
+    grd.addColorStop(0, '#212121');
+    grd.addColorStop(0.5, '#424242');
+    grd.addColorStop(0.9, '#212121');
+    grd.addColorStop(1, '#212121');
+    context.fillStyle = grd;
+    context.fillRect(0, 0, canvas.width, canvas.height);
+
+
     uiObjects.forEach(o => {
         if (!o.isVisible) return;
         if (o.type === OBJECT_TYPE_TEXT) {
             context.textBaseline = "top";
             context.textAlign = o.textAlign;
-            context.font = parseInt(o.fontSize * canvas.height + '') + 'px Arial';
+            context.font = parseInt(o.fontSize * canvas.height + '') + 'px verdana';
             context.fillStyle = o.color;
+
+            if (typeof o.shadow !== "undefined") {
+                context.shadowColor = "grey";
+                context.shadowBlur = o.shadow;
+            }
+            if (typeof o.stroke !== "undefined") {
+                context.lineWidth = o.stroke;
+                context.strokeText(o.text, o.x * canvas.width, o.y * canvas.height);
+            }
+
+
             context.fillText(o.text, o.x * canvas.width, o.y * canvas.height);
 
-
         } else if (o.type === OBJECT_TYPE_IMAGE) {
-
-
-            //console.log(o.content.width);
             let scale = Math.min(
                 o.width * canvas.width / o.content.width,
                 o.height * canvas.height / o.content.height
             );
-
             let x = o.x * canvas.width + ((o.width * canvas.width / 2) - (o.content.width / 2) * scale);
             let y = o.y * canvas.height + ((o.height * canvas.height / 2) - (o.content.height / 2) * scale);
             context.drawImage(o.content,
                 0,
                 0,
-                o.content.width*o.cropWidthRatio,
-                o.content.height*o.cropHeightRatio,
-                x,
+                o.content.width * o.cropWidthRatio,
+                o.content.height * o.cropHeightRatio,
+                2 * x,
                 y,
-                o.content.width * scale*o.cropWidthRatio,
-                o.content.height * scale*o.cropHeightRatio,
-
+                o.content.width * scale * o.cropWidthRatio,
+                o.content.height * scale * o.cropHeightRatio,
             );
 
 
@@ -144,7 +159,6 @@ function draw() {
                 o.height * canvas.height
             );
 
-
         } else if (o.type === OBJECT_TYPE_RECT_FIXED) {
             context.fillStyle = o.color;
             context.fillRect(
@@ -156,6 +170,5 @@ function draw() {
         }
         if (o.onDraw) o.onDraw();
     });
-
     window.requestAnimationFrame(draw);
 }

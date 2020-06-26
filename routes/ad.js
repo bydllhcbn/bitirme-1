@@ -1,7 +1,7 @@
-var express = require('express');
-var router = express.Router();
+let express = require('express');
+let router = express.Router();
 let db = require('../db');
-let ws = require('../websocket');
+let ws = require('../bin/connection');
 
 router.get('/getAds/:boardId', async (req, res) => {
     let ads = await db.db(`SELECT *
@@ -10,7 +10,6 @@ router.get('/getAds/:boardId', async (req, res) => {
                            WHERE board_id = ?`, [req.params.boardId]);
 
     res.send(ads);
-
 });
 
 

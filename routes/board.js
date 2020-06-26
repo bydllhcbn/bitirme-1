@@ -1,7 +1,7 @@
 var express = require('express');
 var router = express.Router();
 let db = require('../db');
-let ws = require('../websocket');
+let ws = require('../bin/connection');
 
 router.post('/add', async (req, res) => {
 

@@ -4,7 +4,7 @@ var path = require('path');
 var cookieParser = require('cookie-parser');
 var logger = require('morgan');
 let db = require('./db');
-let ws = require('./websocket');
+
 var indexRouter = require('./routes/index');
 var clientRouter = require('./routes/client');
 var boardRouter = require('./routes/board');

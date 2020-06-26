@@ -1,6 +1,5 @@
 const WebSocket = require('ws');
-
-const wsServer = new WebSocket.Server({port: 3001});
+const wsServer = new WebSocket.Server({port: process.env.CONNECTION_WEBSOCKET_PORT});
 clients = {};
 loggedClients = {};
 nextClientID = 0;
@@ -32,7 +31,6 @@ WSF.login = (client, params) => {
             loggedClients[0].result("clients", Object.keys(loggedClients));
         }
     }
-
     client.result("login", {
         "socketId": client.id
     });
@@ -71,7 +69,6 @@ WSF.checkStatus = (client, params) => {
     }
 }
 
-
 function onDisconnected(socket) {
     console.log(socket.id + ' disconnected !');
     delete clients[socket.id];
@@ -83,7 +80,6 @@ function onDisconnected(socket) {
         loggedClients[0].result("clients", Object.keys(loggedClients));
     }
 }
-
 
 wsServer.on('connection', function connection(wsClient) {
 
@@ -135,10 +131,7 @@ wsServer.on('connection', function connection(wsClient) {
     wsClient.on('close', function incoming(code, reason) {
         onDisconnected(wsClient);
     });
-
-
 });
-
 
 function noop() {
 }

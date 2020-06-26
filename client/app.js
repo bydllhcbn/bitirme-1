@@ -1,27 +1,39 @@
 let BASE_URL = "http://localhost:3000/"
-let CLIENT_ID = 2
-let extraInfoBlackBar = addRectangle(0, 90, 20, 10);
-let extraInfoYellowBar = addRectangle(20, 90, 80, 10, 'yellow');
+let CLIENT_ID = 1
+let extraInfoBlackBar = addRectangle(0, 90, 20, 10, '#212121');
+let extraInfoYellowBar = addRectangle(20, 90, 80, 10, '#fdd835');
 
-let slidingText = addText("", 0, 93, 8, 'black');
+let slidingText = addText("", 0, 93, 8, '#212121');
 
-let heatText = addText("24", 2, 94, 6, 'white');
-let clockText = addText("19:48", 18, 94, 6, 'white');
+let heatText = addText("24°", 2, 94, 6, '#eceff1');
+let clockText = addText("", 18, 94, 6, '#eceff1');
 clockText.textAlign = 'end';
-let middleImage2 = addImageFromUrl("", 2, 2, 96, 76);
-let middleImage = addImageFromUrl('', 2, 2, 96, 76);
+let date = new Date;
+let hours = date.getHours()
+let minutes = date.getMinutes()
+clockText.text = (hours < 10 ? '0' + hours : hours) + ":" + (minutes < 10 ? '0' + minutes : minutes)
+
+let middleImage2 = addImageFromUrl("", 0, 0, 100, 90);
+let middleImage = addImageFromUrl('', 0, 0, 100, 90);
 
 
-let adTitleText = addText("Başlık", 2, 78, 8);
-let adSubtitleText = addText("Altbaşlık", 2, 84, 5);
+let adTitleText = addText("Başlık", 1, 10, 10, '#eceff1');
+let adSubtitleText = addText("Altbaşlık", 1, 15, 5, '#eceff1');
 
-let adPriceText = addText("0.000 TL", 98, 78, 12);
-adPriceText.textAlign = 'end';
-let adPriceSubText = addText("Kocaeli/Gebze", 98, 84, 5);
-adPriceSubText.textAlign = 'end';
+let adPriceText = addText("0.000 TL", 1, 20, 12, '#eceff1');
 
-let adRect = addRectangleFixed(2, 2, 10, 5, 'red');
-let adText = addText("İLAN", 3, 3, 6, 'white');
+
+let adPriceSubText = addText("Kocaeli/Gebze", 1, 35, 5, '#eceff1');
+
+let yil = addText("Yıl: 2013", 1, 40, 5, '#eceff1');
+let yakit = addText("Yakıt Tipi: Dizel", 1, 45, 5, '#eceff1');
+let kilometre = addText("Kilometre: 124.000 KM", 1, 50, 5, '#eceff1');
+let vites = addText("Vites Tipi: Otomatik", 1, 55, 5, '#eceff1');
+let iletisim = addText("İletişim: (0555) 555 55 55", 1, 60, 5, '#eceff1');
+
+
+let adRect = addRectangleFixed(1, 1, 11, 4.5, '#c62828');
+let adText = addText("İLAN", 2, 2, 6, '#eceff1');
 
 let currentImageIndex = 0;
 let images = [];
@@ -54,7 +66,7 @@ function startAdVideo() {
         currentImageIndex++;
         nextImage();
     }, 5000);
-
+    streamNow();
 }
 
 function getAds() {
@@ -170,7 +182,32 @@ function WebSocketTest() {
             showLoading("BAĞLANIYOR")
             setTimeout(() => {
                 location.reload();
-            }, 4000);
+            }, 5000);
         }
     }
+}
+
+function streamNow() {
+    const ws = new WebSocket('ws://localhost:3005/');
+
+    ws.addEventListener('open', (e) => {
+        console.log('WebSocket Open', e);
+        mediaStream = document.querySelector('canvas').captureStream(30); // 30 FPS
+        mediaRecorder = new MediaRecorder(mediaStream, {
+            mimeType: 'video/webm;codecs=h264',
+            videoBitsPerSecond: 3000000
+        });
+
+        mediaRecorder.addEventListener('dataavailable', (e) => {
+            ws.send(e.data);
+        });
+
+        mediaRecorder.addEventListener('stop', ws.close.bind(ws));
+        mediaRecorder.start(1000); // Start recording, and dump data every second
+    });
+
+    ws.addEventListener('close', (e) => {
+        console.log('WebSocket Close', e);
+        mediaRecorder.stop();
+    });
 }
