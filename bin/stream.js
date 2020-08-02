@@ -3,10 +3,11 @@ const WebSocket = require('ws');
 
 const wss = new WebSocket.Server({port: process.env.STREAM_WEBSOCKET_PORT});
 
-wss.on('connection', (ws) => {
-  const rtmpUrl = decodeURIComponent('rtmp://a.rtmp.youtube.com/live2/--');
+wss.on('connection', (ws,req) => {
+  let rtmpUrl = decodeURIComponent(req.url);
+  rtmpUrl = rtmpUrl.slice(1);
   console.log('Target RTMP URL:', rtmpUrl);
-  
+
   const ffmpeg = child_process.spawn(process.env.FFMPEG_PATH, [
     '-f', 'lavfi', '-i', 'anullsrc',
     '-i', '-',

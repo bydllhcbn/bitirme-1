@@ -27,24 +27,25 @@
                 <h5 class="card-title"><a href="/" aria-label="Previous">
                     <span aria-hidden="true">🠘  </span>
                 </a>YAYIN</h5>
-                <h5><b>Pano Durumu: </b> Bağlı (Canlı yayın yapılmıyor)</h5>
-                <form action="/board/edit" method="post">
-                    <input type="hidden" name="id" value="{{board.id}}">
-                    <div class="form-group">
-                        <label for="title">RTMP Sunucu URL'si</label>
-                        <input value="{{board.title}}" type="text" required minlength="2" class="form-control"
-                               id="title"
-                               name="title">
-                    </div>
-                    <div class="form-group">
-                        <label for="title">Akış Adı/Anahtarı</label>
-                        <input value="{{board.title}}" type="password" required minlength="2" class="form-control"
-                               id="title"
-                               name="title">
-                    </div>
+                <h5><b>Pano Durumu: </b> <span id="connectionStatus">Bağlı</span>
+                    (<span id="liveStatus">Canlı yayın yapılmıyor</span>)</h5>
+                <input style="opacity: 0;position: absolute;">
+                <input type="password" style="opacity: 0;position: absolute;">
+                <input type="hidden" name="id" value="{{board.id}}">
+                <div class="form-group">
+                    <label for="rtmpUrl">RTMP Sunucu URL'si</label>
+                    <input autocomplete="off" type="text" required minlength="2" class="form-control"
+                           id="rtmpUrl"
+                           name="rtmpUrl">
+                </div>
+                <div class="form-group">
+                    <label for="rtmpKey">Akış Adı/Anahtarı</label>
+                    <input autocomplete="new-password" type="password" value="" class="form-control"
+                           id="rtmpKey"
+                           name="rtmpKey">
+                </div>
 
-                    <button type="submit" class="btn btn-success">Yayını Başlat</button>
-                </form>
+                <button class="btn btn-danger" id="liveButton">Yayını Başlat</button>
 
             </div>
         </div>
@@ -76,3 +77,46 @@
     </div>
 
 </div>
+<script>
+    var id = {{board.id}};
+    var isLive = false;
+    var clientCallback = function (clients) {
+        if (id in clients) {
+            $('#connectionStatus').html('Bağlı');
+            $('#liveButton').attr('disabled', false);
+        } else {
+            $('#connectionStatus').html('Bağlı değil');
+            isLive = false;
+            $('#liveButton').html('Yayını Başlat');
+            $('#liveStatus').html('Canlı yayın yapılmıyor.');
+            $('#liveButton').attr('disabled', true);
+        }
+    }
+    var statusCallback = function (params) {
+        if (params.status == "live") {
+            isLive = true;
+            $('#liveStatus').html('Canlı yayın başladı !');
+            $('#liveButton').html('Yayını Durdur');
+        } else if (params.status == "not_live") {
+            isLive = false;
+            $('#liveButton').html('Yayını Başlat');
+            $('#liveStatus').html('Canlı yayın yapılmıyor.');
+        }
+    }
+
+    $('#liveButton').click(function () {
+        var url = $('#rtmpUrl').val();
+        var key = $('#rtmpKey').val();
+        if(url==""){
+            alert('Lütfen adresi yazın!');
+            return;
+        }
+        if(isLive){
+            sendToSocket('stopLive', {'userId': id});
+        }else{
+            sendToSocket('startLive', {'userId': id,"url":(url+'/'+key)});
+        }
+    });
+
+
+</script>

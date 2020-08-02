@@ -13,6 +13,13 @@ let hours = date.getHours()
 let minutes = date.getMinutes()
 clockText.text = (hours < 10 ? '0' + hours : hours) + ":" + (minutes < 10 ? '0' + minutes : minutes)
 
+setInterval(function () {
+    let date = new Date;
+    let hours = date.getHours()
+    let minutes = date.getMinutes()
+    clockText.text = (hours < 10 ? '0' + hours : hours) + ":" + (minutes < 10 ? '0' + minutes : minutes)
+
+}, 30000);
 let middleImage2 = addImageFromUrl("", 0, 0, 100, 90);
 let middleImage = addImageFromUrl('', 0, 0, 100, 90);
 
@@ -24,12 +31,13 @@ let adPriceText = addText("0.000 TL", 1, 20, 12, '#eceff1');
 
 
 let adPriceSubText = addText("Kocaeli/Gebze", 1, 35, 5, '#eceff1');
-
-let yil = addText("Yıl: 2013", 1, 40, 5, '#eceff1');
-let yakit = addText("Yakıt Tipi: Dizel", 1, 45, 5, '#eceff1');
-let kilometre = addText("Kilometre: 124.000 KM", 1, 50, 5, '#eceff1');
-let vites = addText("Vites Tipi: Otomatik", 1, 55, 5, '#eceff1');
-let iletisim = addText("İletişim: (0555) 555 55 55", 1, 60, 5, '#eceff1');
+let infoText = [];
+infoText.push(addText("", 1, 40, 5, '#eceff1'));
+infoText.push(addText("", 1, 45, 5, '#eceff1'));
+infoText.push(addText("", 1, 50, 5, '#eceff1'));
+infoText.push(addText("", 1, 55, 5, '#eceff1'));
+infoText.push(addText("", 1, 60, 5, '#eceff1'));
+infoText.push(addText("", 1, 65, 5, '#eceff1'));
 
 
 let adRect = addRectangleFixed(1, 1, 11, 4.5, '#c62828');
@@ -54,7 +62,17 @@ function nextImage() {
     adTitleText.text = currentImage['title'];
     adSubtitleText.text = currentImage['subtitle'];
     adPriceText.text = currentImage['price'] + " TL";
+
     adPriceSubText.text = currentImage['location'];
+    for (let info of infoText) {
+        info.text = ""
+    }
+
+    //yil.text = currentImage['info'][0]['name'] + ": " + currentImage['info'][0]['content']
+    let i;
+    for (i = 0; i < currentImage['info'].length; i++) {
+        infoText[i].text = currentImage['info'][i]['name'] + ": " + currentImage['info'][i]['content']
+    }
 }
 
 function startAdVideo() {
@@ -66,7 +84,7 @@ function startAdVideo() {
         currentImageIndex++;
         nextImage();
     }, 5000);
-    streamNow();
+    //streamNow();
 }
 
 function getAds() {
@@ -75,8 +93,10 @@ function getAds() {
         if (!res) {
             return;
         }
+
         let total_processes = 0;
         let images_result = JSON.parse(res);
+        console.log(res);
         if (images_result.length === 0) {
             changeLoadingText('İLAN BEKLENİYOR')
             return;
@@ -127,7 +147,6 @@ function getAds() {
 
 function main() {
     console.log("Application started.");
-
     getAds();
     ajaxGet("https://www.cnnturk.com/feed/rss/bilim-teknoloji/news", response => {
         var rssItems = new window.DOMParser().parseFromString(response, "text/xml").querySelectorAll("item");
@@ -155,6 +174,7 @@ function main() {
 }
 
 var ws;
+var isLive = false;
 
 function sendToSocket(action, params) {
     ws.send(JSON.stringify({
@@ -162,6 +182,7 @@ function sendToSocket(action, params) {
         "params": params
     }));
 }
+
 
 function WebSocketTest() {
     if ("WebSocket" in window) {
@@ -177,6 +198,14 @@ function WebSocketTest() {
             if (json.action === "reload") {
                 window.location.reload();
             }
+            if (json.action === "startLive") {
+                streamNow(json.params.url);
+            }
+            if (json.action === "stopLive") {
+                console.log('stopLive');
+                streamSocket.close.bind(streamSocket)
+                streamSocket.close();
+            }
         };
         ws.onclose = function () {
             showLoading("BAĞLANIYOR")
@@ -187,27 +216,32 @@ function WebSocketTest() {
     }
 }
 
-function streamNow() {
-    const ws = new WebSocket('ws://localhost:3005/');
+var streamSocket;
+var mediaRecorder;
 
-    ws.addEventListener('open', (e) => {
+function streamNow(url) {
+    streamSocket = new WebSocket('ws://localhost:3005/' + url);
+    streamSocket.addEventListener('open', (e) => {
         console.log('WebSocket Open', e);
+        sendToSocket("sendStatus", {"userId": 0, "status": "live"});
+        isLive = true;
         mediaStream = document.querySelector('canvas').captureStream(30); // 30 FPS
         mediaRecorder = new MediaRecorder(mediaStream, {
             mimeType: 'video/webm;codecs=h264',
             videoBitsPerSecond: 3000000
         });
-
         mediaRecorder.addEventListener('dataavailable', (e) => {
-            ws.send(e.data);
+            streamSocket.send(e.data);
         });
 
-        mediaRecorder.addEventListener('stop', ws.close.bind(ws));
+        mediaRecorder.addEventListener('stop', streamSocket.close.bind(streamSocket));
         mediaRecorder.start(1000); // Start recording, and dump data every second
     });
 
-    ws.addEventListener('close', (e) => {
+    streamSocket.addEventListener('close', (e) => {
         console.log('WebSocket Close', e);
+        sendToSocket("sendStatus", {"userId": 0, "status": "not_live"});
+        isLive = false;
         mediaRecorder.stop();
     });
 }

@@ -15,10 +15,10 @@ function animateImage(nextTag) {
 function animateImage2(nextTag) {
     middleImage2.content = nextTag;
     let inter = setInterval(function () {
-        middleImage.cropWidthRatio -= 0.01;
-        if (middleImage.cropWidthRatio < 0) {
+        middleImage.opacity -= 0.01;
+        if (middleImage.opacity < 0) {
             middleImage.content = nextTag;
-            middleImage.cropWidthRatio = 1;
+            middleImage.opacity = 1;
             //image.changeUrl(nextImageUrl);
             clearInterval(inter);
         }

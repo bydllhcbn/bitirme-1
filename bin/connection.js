@@ -53,6 +53,32 @@ WSF.sendStatus = (client, params) => {
 }
 
 
+WSF.startLive = (client, params) => {
+    let userId = params['userId'];
+
+    if (userId in loggedClients) {
+        loggedClients[userId].result("startLive", {
+            "from": client.userId,
+            "url": params.url
+        });
+    } else {
+        client.result("error", "TARGET USER NOT LOGGED IN!");
+        client.terminate();
+    }
+}
+
+
+WSF.stopLive = (client, params) => {
+    let userId = params['userId'];
+    if (userId in loggedClients) {
+        loggedClients[userId].result("stopLive", {
+            "from": client.userId
+        });
+    } else {
+        client.result("error", "TARGET USER NOT LOGGED IN!");
+        client.terminate();
+    }
+}
 WSF.checkStatus = (client, params) => {
     let userId = params['userId'];
 

@@ -37,7 +37,20 @@
                         </div>
                     </div>
 
-
+                    <div class="form-group">
+                        <label for="info_name">İlan Bilgileri</label>
+                        <div class="input-group control-group after-add-more2">
+                            <input id="info_name" type="text" name="info_name[]" class="form-control"
+                                   placeholder="Bilgi Başlığı">
+                            <input id="info_content" type="text" name="info_content[]" class="form-control"
+                                   placeholder="Bilgi İçeriği">
+                            <div class="input-group-btn">
+                                <button class="btn btn-success add-more2" type="button"><i
+                                        class="glyphicon glyphicon-plus"></i> +
+                                </button>
+                            </div>
+                        </div>
+                    </div>
                     <button type="submit" class="btn btn-primary">Ekle</button>
                 </form>
             </div>
@@ -48,6 +61,17 @@
 <div class="copy" style="display: none;">
     <div class="control-group input-group" style="margin-top:10px">
         <input type="text" name="urls[]" class="form-control" placeholder="Bir URL girin">
+        <div class="input-group-btn">
+            <button class="btn btn-danger remove" type="button"><i class="glyphicon glyphicon-remove"></i> Sil
+            </button>
+        </div>
+    </div>
+</div>
+
+<div class="copy2" style="display: none;">
+    <div class="control-group input-group" style="margin-top:10px">
+        <input id="info_name" type="text" name="info_name[]" class="form-control" placeholder="Bilgi Başlığı">
+        <input id="info_content" type="text" name="info_content[]" class="form-control" placeholder="Bilgi İçeriği">
         <div class="input-group-btn">
             <button class="btn btn-danger remove" type="button"><i class="glyphicon glyphicon-remove"></i> Sil
             </button>

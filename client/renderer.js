@@ -38,6 +38,7 @@ function addImageFromTag(imgTag, x, y, width, height) {
         width: width / 100,
         height: height / 100,
         cropWidthRatio: 1,
+        opacity:1,
         cropHeightRatio: 1,
         isVisible: true,
         onDraw: false,
@@ -138,6 +139,7 @@ function draw() {
             );
             let x = o.x * canvas.width + ((o.width * canvas.width / 2) - (o.content.width / 2) * scale);
             let y = o.y * canvas.height + ((o.height * canvas.height / 2) - (o.content.height / 2) * scale);
+            context.globalAlpha = o.opacity;
             context.drawImage(o.content,
                 0,
                 0,
